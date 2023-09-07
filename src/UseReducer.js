@@ -9,6 +9,30 @@ function UseReducer({ name }) {
     // const [error, setError] = React.useState(false);
     // const [loading, setLoading] = React.useState(false)
 
+    const onConfirm = () => {
+        dispatch({type: actionTypes.confirm});
+    }
+
+    const onError = () => {
+        dispatch({type: actionTypes.error})
+    }
+
+    const onWrite = (event) => {
+        dispatch({type: actionTypes.write, payload: event.target.value})
+    }
+
+    const onFindOut = () => {
+        dispatch({type: actionTypes.findOut})
+    }
+
+    const onDelete = () => {
+        dispatch({type: 'DELETE'});
+    }
+
+    const onRestore = () => {
+        dispatch({type: 'RESTORE'})
+    }
+
     console.log(state)
 
 
@@ -20,9 +44,9 @@ function UseReducer({ name }) {
                 console.log('start validation')
 
                 if(state.value === SECURITY_CODE) {
-                    dispatch({type: 'CONFIRM'});
+                    onConfirm();
                 } else {
-                    dispatch({type: 'ERROR'})
+                    onError();
                 }
 
                 console.log('end validation')
@@ -50,12 +74,12 @@ function UseReducer({ name }) {
                 <input placeholder="code of security"
                 value={state.value}
                 onChange={(event) => {
-                    dispatch({type: 'WRITE', payload: event.target.value})
+                    onWrite(event)
                    // onWrite(event.target.value);
                 }}
                 />
                 <button
-                    onClick={() => dispatch({type: 'FIND_OUT'})}
+                    onClick={() => onFindOut()}
                 >Find out</button>
             </div>
             )
@@ -64,10 +88,10 @@ function UseReducer({ name }) {
             <React.Fragment>
                 <p>Are you sure you want to delete?</p>
                 <button onClick={() => {
-                    dispatch({type: 'DELETE'});
+                    onDelete();
                 }}>Yes, Delete</button>
                 <button onClick={() => {
-                    dispatch({type: 'RESTORE'});
+                    onRestore();
                 }}>No, go back</button>
             </React.Fragment>
         )
@@ -76,7 +100,7 @@ function UseReducer({ name }) {
             <React.Fragment>
                 <p>Delete Successfully</p>
             <button onClick={() => {
-                dispatch({type: 'RESTORE'});
+                onRestore();
             }}>Retrieve useState</button>
             </React.Fragment>
         )
@@ -91,13 +115,23 @@ const initialState = {
     confirmed: false,
 }
 
+const actionTypes = {
+    confirm: 'CONFIRM',
+    error: 'ERROR',
+    write: 'WRITE',
+    delete: 'DELETE',
+    findOut: 'FIND_OUT',
+    restore: 'RESTORE',
+
+}
+
 const reducerObject = (state, payload) => ({
-    'CONFIRM': {...state, loading: false, error: false, confirmed: true},
-    'ERROR': {...state, error: true, loading: false},
-    'WRITE': {...state, value: payload},
-    'FIND_OUT': {...state, loading: true},
-    'DELETE': {...state, delete: true},
-    'RESTORE': {...state, confirmed: false, delete: false, value: ''}
+    [actionTypes.confirm]: {...state, loading: false, error: false, confirmed: true},
+    [actionTypes.error]: {...state, error: true, loading: false},
+    [actionTypes.write]: {...state, value: payload},
+    [actionTypes.findOut]: {...state, loading: true},
+    [actionTypes.delete]: {...state, delete: true},
+    [actionTypes.restore]: {...state, confirmed: false, delete: false, value: ''}
 })
 
 const reducer = (state, action) => {
